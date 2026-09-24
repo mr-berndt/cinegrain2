@@ -59,7 +59,7 @@ It also works wonders on DVDs. The grain acts as dither: the picture looks crisp
 
 ## Simpler synthesis, predictable controls
 
-With cinegrain 1 I could imitate most grain patterns by playing with the controls, but I could not simply make the grain larger or softer and keep its character. cinegrain 2 uses a simpler synthesis: white noise, shaped by a Gaussian blur for the grain size, with an optional softening on top. Size and softness now behave predictably, and the grain still looks real. While comparing, I more than once mixed up which grain was real and which was synthetic. Under a microscope there are certainly differences, but it beats every commercial solution I have come across.
+With cinegrain 1 I could imitate most grain patterns by playing with the controls, but I could not simply make the grain larger or softer and keep its character. cinegrain 2 uses a simpler synthesis: white noise, shaped by a Gaussian blur for the grain size, with an optional softening on top. Size and softness now behave predictably, and the grain still looks real. While comparing, I more than once mixed up which grain was real and which was synthetic. Under a microscope there are certainly differences.
 
 ---
 
@@ -104,7 +104,16 @@ Size is calibrated for 4K output and scales with the output resolution, so a set
 
 ### Presets
 
-`flat`, `35mm std`, `35mm high`, `16mm std`, `16mm low` and `Aliens`. A preset is a starting point: as soon as a control is touched, the overlay shows `[custom]`.
+| Preset | Level | Size | Soft | Black | Shadow | Mid | High | White | Reference |
+|---|---|---|---|---|---|---|---|---|---|
+| flat | 0.200 | 0.40 | 0.0 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | neutral, same grain everywhere |
+| 35mm std | 0.114 | 0.40 | 0.0 | −0.81 | −0.26 | 0.00 | −0.76 | −1.00 | Westworld (2016) |
+| 35mm high | 0.075 | 0.75 | 0.0 | −0.90 | −0.59 | −0.04 | 0.00 | −0.95 | Lost (2004) |
+| 16mm std | 0.102 | 1.25 | 0.0 | −0.78 | −0.34 | 0.00 | −0.58 | −1.00 | First Man (2018) |
+| 16mm low | 0.106 | 1.50 | 0.0 | 0.00 | −0.01 | −0.12 | −0.82 | −1.00 | Leaving Las Vegas (1995) |
+| Aliens | 0.240 | 0.50 | 0.8 | +3.00 | +0.90 | −0.15 | −0.45 | −0.95 | Aliens (1986) |
+
+A preset is a starting point: as soon as a control is touched, the overlay shows `[custom]`.
 
 ### Sidecars, per film and per series
 
@@ -133,6 +142,39 @@ osd_timeout=8
 3. Switch it on, set **Size** first, then **Level**, then shape the zones: pull down the zones where the original is clean, raise those where it is heavy.
 4. Toggle on and off until you cannot tell where the original ends.
 5. Check the result on the grey staircase (`Alt+d` twice).
+
+## How it works
+
+At the resolution of a 4K scan, every pixel covers hundreds of silver-halide crystals. By the central limit theorem, their sum is simply Gaussian noise; simulating the individual crystals, as physical grain models do, gives the same result at a far higher cost. cinegrain 2 therefore takes the shortcut:
+
+```
+crystal field        →  noise, new for every frame
+optical integration  →  separable Gaussian blur, its width is Size
+exposure             →  applied in the density domain: color × exp(Level × zone weight × grain)
+```
+
+- **Grain size.** Size is the width (sigma) of the blur in pixels at 2160p. It scales with the output height, so a setting looks the same at 1080p and 4K. The grain is rendered at output resolution, after all scaling, so it stays pixel-sharp whatever the source resolution.
+- **Colour.** Film has three emulsion layers, each with its own grain. The shader blurs one noise field and samples it at three widely separated offsets, which gives red, green and blue independent grain without blurring three times. Red is slightly coarser and blue slightly finer, as in real stock. The control script mixes this towards monochrome grain; colour grain stays subtle.
+- **Density domain.** Grain changes the density of the silver, so it acts multiplicatively on the light. Applying it as `exp()` instead of adding it keeps blacks black and gives highlights the right amount of sparkle.
+- **Zones.** The zone weight is interpolated with smoothstep between the five zones, so the curve has no overshoot and each zone value is exactly what you get at that brightness. Black and White sit at the very ends, so −1 there removes the grain completely.
+- **Soft.** An optional 8-tap ring blur with a random rotation per pixel softens the grain without making it larger, like the optical softening of small grain projected large.
+
+### Calibration
+
+The blur width was calibrated against ProRes 4K DCI scans of real film. The measure is the correlation between neighbouring pixels (ac1), which captures how clumpy the grain is:
+
+| Format | Size | ac1 scan | ac1 cinegrain 2 |
+|---|---|---|---|
+| 35 mm | 0.00 | −0.006 | +0.000 |
+| 35 mm heavy | 0.69 | +0.572 | +0.570 |
+| 16 mm | 1.13 | +0.821 | +0.820 |
+| 16 mm heavy | 1.64 | +0.910 | +0.909 |
+| 8 mm | 2.54 | +0.961 | +0.959 |
+| 8 mm heavy | 2.57 | +0.962 | +0.961 |
+
+35 mm at Size 0 is pure white noise: that *is* what a 35 mm scan looks like at 4K. The table is also a good starting point for Size when you know the format of a film.
+
+What the shortcut does not reproduce: real grain is very slightly skewed towards bright values, and 8 mm, with only about five crystals per pixel, is not quite Gaussian. Both are hard to see.
 
 ## License
 
