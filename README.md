@@ -16,7 +16,7 @@ The new grain synthesis now matches the original scans close enough to make it e
 
 [![cinegrain 2 next to ProRes 4K scans of real grain, ten film formats](images/grain-vs-scans.png)](https://raw.githubusercontent.com/mr-berndt/cinegrain2/main/images/grain-vs-scans.png)
 
-*Left: cinegrain 2, right: ProRes 4K DCI scans of real grain on a 50 % grey card, 1:1 crops, seamlessly joined. Only the mean brightness of each half is matched, the grain strength is not.*
+*Left: cinegrain 2, right: ProRes 4K DCI scans of real grain on a 50 % grey card, 1:1 crops, seamlessly joined. Only the mean brightness of each half is matched, the grain strength is not. Reference scans: free DCI 4K film grain plates from [tdcat.com](https://tdcat.com/downloads/filmgrain).*
 
 *Click on the image to load it in full size. The preview here is scaled down and hides the grain. If your browser fits the image to the window, click it once more to see it at 100 %.*
 
@@ -186,7 +186,7 @@ exposure             →  applied in the density domain: color × exp(Level × z
 
 ### Calibration
 
-Reference: ProRes 4K DCI grain scans of real film on a 50 % grey card, 8 mm to 35 mm. For each scan, Size was fitted to its radial power spectrum by rendering the shader; Level 1.0 was set to the strength of the 16 mm scan. Grain strength measured on luma at 2160p:
+Reference: ProRes 4K DCI grain scans of real film on a 50 % grey card, 8 mm to 35 mm, the free film grain plates from [tdcat.com](https://tdcat.com/downloads/filmgrain). For each scan, Size was fitted to its radial power spectrum by rendering the shader; Level 1.0 was set to the strength of the 16 mm scan. Grain strength measured on luma at 2160p:
 
 | Format | Size | Level | cinegrain 2 / scan |
 |---|---|---|---|
