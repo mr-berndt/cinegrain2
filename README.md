@@ -8,15 +8,17 @@ Realistic film grain for [mpv](https://mpv.io), with a five-zone equalizer that 
 
 ---
 
-## What's new
+## Latest update – 12 October 2026
 
 I further improved the grain synthesizer and also made the user-values more meaningful. Also the values now directly correspond to actual grey card scans. Level 1 now matches the grain strength of the grey-card scans at every size. You can switch between sizes on the fly and the grain stays true to the film, without having to readjust the level every time.
 
 The new grain synthesis now matches the original scans close enough to make it extremely difficult to tell the synthetic grain and the real thing apart. Finally!
 
-[![cinegrain 2 next to ProRes 4K scans of real grain, ten film formats](images/grain-vs-scans.png)](images/grain-vs-scans.png)
+[![cinegrain 2 next to ProRes 4K scans of real grain, ten film formats](images/grain-vs-scans.png)](https://raw.githubusercontent.com/mr-berndt/cinegrain2/main/images/grain-vs-scans.png)
 
-*Left: cinegrain 2, right: ProRes 4K DCI scans of real grain on a 50 % grey card, 1:1 crops, seamlessly joined. Only the mean brightness of each half is matched, the grain strength is not. Click to see it at full size.*
+*Left: cinegrain 2, right: ProRes 4K DCI scans of real grain on a 50 % grey card, 1:1 crops, seamlessly joined. Only the mean brightness of each half is matched, the grain strength is not.*
+
+*Click on the image to load it in full size. The preview here is scaled down and hides the grain. If your browser fits the image to the window, click it once more to see it at 100 %.*
 
 What changed under the hood:
 
@@ -32,20 +34,20 @@ Watching films with the original cinegrain, I kept running into films whose grai
 
 | Aliens (1986): heavy grain in the shadows, clean highlights | Lost (2004): grain right up to the white sky |
 |---|---|
-| [![Aliens, full frame](images/aliens-1986-original.png)](images/aliens-1986-original.png) | [![Lost, full frame](images/lost-s01e24-original.png)](images/lost-s01e24-original.png) |
-| [![Aliens, 1:1 detail](images/aliens-1986-crop-bright.png)](images/aliens-1986-crop-bright.png) | [![Lost, 1:1 detail](images/lost-s01e24-crop-sky.png)](images/lost-s01e24-crop-sky.png) |
+| [![Aliens, full frame](images/aliens-1986-original.png)](https://raw.githubusercontent.com/mr-berndt/cinegrain2/main/images/aliens-1986-original.png) | [![Lost, full frame](images/lost-s01e24-original.png)](https://raw.githubusercontent.com/mr-berndt/cinegrain2/main/images/lost-s01e24-original.png) |
+| [![Aliens, 1:1 detail](images/aliens-1986-crop-bright.png)](https://raw.githubusercontent.com/mr-berndt/cinegrain2/main/images/aliens-1986-crop-bright.png) | [![Lost, 1:1 detail](images/lost-s01e24-crop-sky.png)](https://raw.githubusercontent.com/mr-berndt/cinegrain2/main/images/lost-s01e24-crop-sky.png) |
 
-*Top: full 1080p frames. Bottom: 1:1 crops, no scaling. Both without any synthetic grain. Click an image to see it at full size.*
+*Top: full 1080p frames. Bottom: 1:1 crops, no scaling. Both without any synthetic grain. Click an image to load it in full size.*
 
 Analyzing some more films showed what was going on: the intensity of real grain varies wildly along the brightness axis. The reasons are well known once you dig into it: different film stocks, and different ways of exposing and developing them. Here are the approximate grain curves of six films. They have little in common:
 
-[![Grain amplitude over luma for six films](images/grain-curves-six-films.png)](images/grain-curves-six-films.png)
+[![Grain amplitude over luma for six films](images/grain-curves-six-films.png)](https://raw.githubusercontent.com/mr-berndt/cinegrain2/main/images/grain-curves-six-films.png)
 
 Fun fact: Flashdance and Aliens match very closely!
 
 The same six curves rendered as grain on a grey staircase, from black on the left to white on the right:
 
-[![Six grain characters on a grey staircase](images/greystair-six-films.png)](images/greystair-six-films.png)
+[![Six grain characters on a grey staircase](images/greystair-six-films.png)](https://raw.githubusercontent.com/mr-berndt/cinegrain2/main/images/greystair-six-films.png)
 
 A single bell curve with a peak and a width, which is what cinegrain 1 had, cannot follow shapes like these.
 
@@ -67,7 +69,7 @@ The equalizer sits as an overlay over the running picture and is operated with t
 
 | Fine grain up into the highlights | Coarse grain over the whole range | Heavy in the shadows, clean on top |
 |---|---|---|
-| [![Fine grain](images/menu-greyramp-fine.png)](images/menu-greyramp-fine.png) | [![Coarse grain](images/menu-greyramp-coarse.png)](images/menu-greyramp-coarse.png) | [![Shadow grain](images/menu-greyramp-shadows.png)](images/menu-greyramp-shadows.png) |
+| [![Fine grain](images/menu-greyramp-fine.png)](https://raw.githubusercontent.com/mr-berndt/cinegrain2/main/images/menu-greyramp-fine.png) | [![Coarse grain](images/menu-greyramp-coarse.png)](https://raw.githubusercontent.com/mr-berndt/cinegrain2/main/images/menu-greyramp-coarse.png) | [![Shadow grain](images/menu-greyramp-shadows.png)](https://raw.githubusercontent.com/mr-berndt/cinegrain2/main/images/menu-greyramp-shadows.png) |
 
 ## Restoring grain that encoding took away
 
