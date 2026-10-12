@@ -57,18 +57,21 @@ end
 -- between neighbours. Zone value 0 = flat, -1 = no grain, +3 = four times.
 
 -- ─── Presets ─────────────────────────────────────────────────────────────────
+-- Fitted to ProRes 4K DCI scans of real grain: Size from the power spectrum
+-- of each scan; Level 1.0 is the strength of the scans on a 50 % grey card.
+-- The zones follow a typical film curve: more grain in the shadows, less
+-- in the highlights, none in pure white.
 local presets = {
-    { name = "flat",      LEVEL = 0.200, GRAIN_SIZE = 0.40, SOFTBLUR = 0.0, B1 =  0.00, B2 =  0.00, B3 =  0.00, B4 =  0.00, B5 =  0.00 },
-    { name = "35mm std",  LEVEL = 0.114, GRAIN_SIZE = 0.40, SOFTBLUR = 0.0, B1 = -0.81, B2 = -0.26, B3 =  0.00, B4 = -0.76, B5 = -1.00 },
-    { name = "35mm high", LEVEL = 0.075, GRAIN_SIZE = 0.75, SOFTBLUR = 0.0, B1 = -0.90, B2 = -0.59, B3 = -0.04, B4 =  0.00, B5 = -0.95 },
-    { name = "16mm std",  LEVEL = 0.102, GRAIN_SIZE = 1.25, SOFTBLUR = 0.0, B1 = -0.78, B2 = -0.34, B3 =  0.00, B4 = -0.58, B5 = -1.00 },
-    { name = "16mm low",  LEVEL = 0.106, GRAIN_SIZE = 1.50, SOFTBLUR = 0.0, B1 =  0.00, B2 = -0.01, B3 = -0.12, B4 = -0.82, B5 = -1.00 },
-    { name = "Aliens",    LEVEL = 0.240, GRAIN_SIZE = 0.50, SOFTBLUR = 0.8, B1 =  3.00, B2 =  0.90, B3 = -0.15, B4 = -0.45, B5 = -0.95 },
+    { name = "35mm",       LEVEL = 1.000, GRAIN_SIZE = 0.37, SOFTBLUR = 0.0, B1 =  0.00, B2 =  0.65, B3 =  0.00, B4 = -0.65, B5 = -2.00 },
+    { name = "35mm heavy", LEVEL = 1.000, GRAIN_SIZE = 0.72, SOFTBLUR = 0.0, B1 =  0.00, B2 =  0.65, B3 =  0.00, B4 = -0.65, B5 = -2.00 },
+    { name = "16mm",       LEVEL = 1.000, GRAIN_SIZE = 1.16, SOFTBLUR = 0.0, B1 =  0.00, B2 =  0.65, B3 =  0.00, B4 = -0.65, B5 = -2.00 },
+    { name = "16mm heavy", LEVEL = 1.000, GRAIN_SIZE = 1.68, SOFTBLUR = 0.0, B1 =  0.00, B2 =  0.65, B3 =  0.00, B4 = -0.65, B5 = -2.00 },
+    { name = "8mm",        LEVEL = 1.000, GRAIN_SIZE = 2.66, SOFTBLUR = 0.0, B1 =  0.00, B2 =  0.65, B3 =  0.00, B4 = -0.65, B5 = -2.00 },
 }
 
 -- ─── Menu ────────────────────────────────────────────────────────────────────
 local MENU = {
-    { key = "LEVEL",      label = "Level",  fmt = "%.3f",  step = 0.01 },
+    { key = "LEVEL",      label = "Level",  fmt = "%.2f",  step = 0.01 },
     { key = "GRAIN_SIZE", label = "Size",   fmt = "%.2f",  step = 0.05 },
     { key = "SOFTBLUR",   label = "Soft",   fmt = "%.2f",  step = 0.10 },
     { key = "B1",         label = "Black",  fmt = "%+.2f", step = 0.05 },
@@ -91,7 +94,7 @@ local SHADER_KEY = {
     LEVEL = "LEVEL", GRAIN_SIZE = "GRAIN_SIZE", SOFTBLUR = "SOFTBLUR",
     B1 = "GAIN_1", B2 = "GAIN_2", B3 = "GAIN_3", B4 = "GAIN_4", B5 = "GAIN_5",
 }
-local CHROMA = "0.1000"
+local CHROMA = "0.0000"
 
 -- ─── State ───────────────────────────────────────────────────────────────────
 local params = {}

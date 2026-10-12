@@ -8,6 +8,24 @@ Realistic film grain for [mpv](https://mpv.io), with a five-zone equalizer that 
 
 ---
 
+## What's new
+
+I further improved the grain synthesizer and also made the user-values more meaningful. Also the values now directly correspond to actual grey card scans. Level 1 now matches the grain strength of the grey-card scans at every size. You can switch between sizes on the fly and the grain stays true to the film, without having to readjust the level every time.
+
+The new grain synthesis now matches the original scans close enough to make it extremely difficult to tell the synthetic grain and the real thing apart. Finally!
+
+[![cinegrain 2 next to ProRes 4K scans of real grain, ten film formats](images/grain-vs-scans.png)](images/grain-vs-scans.png)
+
+*Left: cinegrain 2, right: ProRes 4K DCI scans of real grain on a 50 % grey card, 1:1 crops, seamlessly joined. Only the mean brightness of each half is matched, the grain strength is not. Click to see it at full size.*
+
+What changed under the hood:
+
+- **Grain shape.** Real grain is not just blurred noise. Its coarse structure is missing: the crystals sit evenly side by side. Plain blurred noise keeps that coarse structure and shows it as faint bright and dark blotches that change with every frame, three to eight times stronger than in the scans. cinegrain 2 now subtracts a wide copy of the grain from itself, fitted to the power spectra of ten grain scans from 8 mm to 35 mm. They all share the same shape.
+- **Level in real units.** Level 1.0 is the grain strength of the scans on a 50 % grey card, for every Size.
+- **Display resolution.** Size is defined at 2160p. On a smaller output, fine grain is attenuated the way a 4K scan would be when brought down to that resolution (mpv's default downscaler); coarse grain is kept. At 2160p and above nothing is attenuated.
+- **Equalizer at mid grey.** The zone curve is normalised to 1 at 50 % grey, the brightness of the scans, so the zones only shape the grain relative to mid grey and never change what Level means.
+- **Monochrome.** The scans have no colour grain, so neither does cinegrain 2 by default.
+
 ## Why a second version
 
 Watching films with the original cinegrain, I kept running into films whose grain looked very different from mine. The difference was easy to spot once I looked for it: **Aliens** is outright dirty in the lower brightness region and almost clean above mid brightness, while the TV show **Lost** has grain all the way up into the brightest parts of the picture and is rather clean at the bottom end.
@@ -59,7 +77,7 @@ It also works wonders on DVDs. The grain acts as dither: the picture looks crisp
 
 ## Simpler synthesis, predictable controls
 
-With cinegrain 1 I could imitate most grain patterns by playing with the controls, but I could not simply make the grain larger or softer and keep its character. cinegrain 2 uses a simpler synthesis: white noise, shaped by a Gaussian blur for the grain size, with an optional softening on top. Size and softness now behave predictably, and the grain still looks real. While comparing, I more than once mixed up which grain was real and which was synthetic. Under a microscope there are certainly differences.
+With cinegrain 1 I could imitate most grain patterns by playing with the controls, but I could not simply make the grain larger or softer and keep its character. cinegrain 2 uses a simpler synthesis: white noise, shaped by a Gaussian blur for the grain size minus a wide copy of itself, with an optional softening on top. Size and softness now behave predictably, and the grain still looks real. While comparing, I more than once mixed up which grain was real and which was synthetic. Under a microscope there are certainly differences.
 
 ---
 
@@ -95,23 +113,24 @@ The overlay shows all eight controls in one row, the selected one in green. It a
 
 | Control | Range | Step | Meaning |
 |---|---|---|---|
-| Level | 0 … 5 | 0.01 | overall grain strength |
-| Size | 0 … 3 | 0.05 | grain size (0 = single-pixel 35 mm grain, ~2.5 = 8 mm clumps) |
+| Level | 0 … 5 | 0.01 | grain strength, 1.0 = as strong as a real film scan |
+| Size | 0 … 3 | 0.05 | grain size (~0.4 = 35 mm, ~1.2 = 16 mm, ~2.7 = 8 mm) |
 | Soft | 0 … 10 | 0.1 | softens the grain without changing its size |
 | Black, Shadow, Mid, High, White | −3 … +3 | 0.05 | grain in that zone, relative to the others (−1 = none) |
 
-Size is calibrated for 4K output and scales with the output resolution, so a setting looks the same at 1080p and 4K.
+Size is calibrated for 4K output and scales with the output resolution. Below 4K, fine grain is attenuated the way a 4K scan of real film would be on that display.
 
 ### Presets
 
-| Preset | Level | Size | Soft | Black | Shadow | Mid | High | White | Reference |
-|---|---|---|---|---|---|---|---|---|---|
-| flat | 0.200 | 0.40 | 0.0 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | neutral, same grain everywhere |
-| 35mm std | 0.114 | 0.40 | 0.0 | −0.81 | −0.26 | 0.00 | −0.76 | −1.00 | Westworld (2016) |
-| 35mm high | 0.075 | 0.75 | 0.0 | −0.90 | −0.59 | −0.04 | 0.00 | −0.95 | Lost (2004) |
-| 16mm std | 0.102 | 1.25 | 0.0 | −0.78 | −0.34 | 0.00 | −0.58 | −1.00 | First Man (2018) |
-| 16mm low | 0.106 | 1.50 | 0.0 | 0.00 | −0.01 | −0.12 | −0.82 | −1.00 | Leaving Las Vegas (1995) |
-| Aliens | 0.240 | 0.50 | 0.8 | +3.00 | +0.90 | −0.15 | −0.45 | −0.95 | Aliens (1986) |
+| Preset | Level | Size | Soft | Black | Shadow | Mid | High | White |
+|---|---|---|---|---|---|---|---|---|
+| 35mm | 1.00 | 0.37 | 0.0 | 0.00 | +0.65 | 0.00 | −0.65 | −2.00 |
+| 35mm heavy | 1.00 | 0.72 | 0.0 | 0.00 | +0.65 | 0.00 | −0.65 | −2.00 |
+| 16mm | 1.00 | 1.16 | 0.0 | 0.00 | +0.65 | 0.00 | −0.65 | −2.00 |
+| 16mm heavy | 1.00 | 1.68 | 0.0 | 0.00 | +0.65 | 0.00 | −0.65 | −2.00 |
+| 8mm | 1.00 | 2.66 | 0.0 | 0.00 | +0.65 | 0.00 | −0.65 | −2.00 |
+
+Size and Level come straight from the grain scans. The zones follow a typical film curve: more grain in the shadows, less in the highlights, none in pure white.
 
 A preset is a starting point: as soon as a control is touched, the overlay shows `[custom]`.
 
@@ -149,32 +168,40 @@ At the resolution of a 4K scan, every pixel covers hundreds of silver-halide cry
 
 ```
 crystal field        →  noise, new for every frame
-optical integration  →  separable Gaussian blur, its width is Size
+optical integration  →  separable Gaussian blur, its width is Size,
+                        minus a wide copy (8.4 × Size) that removes the coarse structure
+display              →  amplitude scaled to what the output resolution can show
 exposure             →  applied in the density domain: color × exp(Level × zone weight × grain)
 ```
 
-- **Grain size.** Size is the width (sigma) of the blur in pixels at 2160p. It scales with the output height, so a setting looks the same at 1080p and 4K. The grain is rendered at output resolution, after all scaling, so it stays pixel-sharp whatever the source resolution.
-- **Colour.** Film has three emulsion layers, each with its own grain. The shader blurs one noise field and samples it at three widely separated offsets, which gives red, green and blue independent grain without blurring three times. Red is slightly coarser and blue slightly finer, as in real stock. The control script mixes this towards monochrome grain; colour grain stays subtle.
+- **Grain size.** Size is the width (sigma) of the blur in pixels at 2160p. It scales with the output height. The grain is rendered at output resolution, after all scaling, so it stays sharp whatever the source resolution.
+- **Grain shape.** All ten reference scans, 8 mm to 35 mm, have the same spectrum: Gaussian-blurred noise with its coarse structure removed. The shader subtracts 0.95 × a copy blurred 8.4 times wider. The wide blur only carries coarse structure, so it is computed on a quarter-size grid; the whole grain costs about as much as the plain blur did.
+- **Display resolution.** The grain we imitate is the film's own, as a 4K scan shows it. A small 1×1 pass computes, once per frame, how much of it survives on the current output: the variance of the 2160p grain after a hermite downscale (mpv's default) to the output height. At 1200p about 44 % of fine 35 mm grain remains, 87 % of 16 mm, almost all of 8 mm, which is what the real scans give.
+- **Colour.** The shader samples its grain field at three widely separated offsets, which gives independent grain per channel. By default it is mixed to monochrome, like the reference scans; the shader option `CHROMA` brings colour grain back.
 - **Density domain.** Grain changes the density of the silver, so it acts multiplicatively on the light. Applying it as `exp()` instead of adding it keeps blacks black and gives highlights the right amount of sparkle.
-- **Zones.** The zone weight is interpolated with smoothstep between the five zones, so the curve has no overshoot and each zone value is exactly what you get at that brightness. Black and White sit at the very ends, so −1 there removes the grain completely.
+- **Zones.** The zone weight is interpolated with smoothstep between the five zones, so the curve has no overshoot. It is normalised to 1 at 50 % grey, the brightness of the reference scans, so Level keeps its meaning whatever the zones do. Black and White sit at the very ends, so −1 there removes the grain completely.
 - **Soft.** An optional 8-tap ring blur with a random rotation per pixel softens the grain without making it larger, like the optical softening of small grain projected large.
 
 ### Calibration
 
-The blur width was calibrated against ProRes 4K DCI scans of real film. The measure is the correlation between neighbouring pixels (ac1), which captures how clumpy the grain is:
+Reference: ProRes 4K DCI grain scans of real film on a 50 % grey card, 8 mm to 35 mm. For each scan, Size was fitted to its radial power spectrum by rendering the shader; Level 1.0 was set to the strength of the 16 mm scan. Grain strength measured on luma at 2160p:
 
-| Format | Size | ac1 scan | ac1 cinegrain 2 |
+| Format | Size | Level | cinegrain 2 / scan |
 |---|---|---|---|
-| 35 mm | 0.00 | −0.006 | +0.000 |
-| 35 mm heavy | 0.69 | +0.572 | +0.570 |
-| 16 mm | 1.13 | +0.821 | +0.820 |
-| 16 mm heavy | 1.64 | +0.910 | +0.909 |
-| 8 mm | 2.54 | +0.961 | +0.959 |
-| 8 mm heavy | 2.57 | +0.962 | +0.961 |
+| 35 mm | 0.37 | 1.00 | 1.03 |
+| Super 35 | 0.50 | 1.00 | 1.03 |
+| 35 mm heavy | 0.72 | 1.00 | 1.02 |
+| Super 35 heavy | 0.85 | 1.00 | 1.01 |
+| Super 16 | 0.97 | 1.00 | 1.01 |
+| 16 mm | 1.16 | 1.00 | 1.00 |
+| Super 16 heavy | 1.42 | 1.00 | 1.00 |
+| 16 mm heavy | 1.68 | 1.00 | 1.00 |
+| 8 mm | 2.66 | 1.00 | 0.99 |
+| 8 mm heavy | 2.66 | 1.48 | 0.99 |
 
-35 mm at Size 0 is pure white noise: that *is* what a 35 mm scan looks like at 4K. The table is also a good starting point for Size when you know the format of a film.
+All scans but one have the same strength, so Level 1.0 fits them all; the 8 mm heavy scan is simply stronger. The table is also a good starting point for Size when you know the format of a film.
 
-What the shortcut does not reproduce: real grain is very slightly skewed towards bright values, and 8 mm, with only about five crystals per pixel, is not quite Gaussian. Both are hard to see.
+What the model does not reproduce: real grain is slightly skewed towards bright values, and the 35 mm scans vary a little more in local strength than the synthetic grain. Both are hard to see.
 
 ## License
 
