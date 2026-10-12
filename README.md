@@ -207,4 +207,10 @@ What the model does not reproduce: real grain is slightly skewed towards bright 
 
 ## License
 
-MIT
+Copyright (C) 2026 mr-berndt
+
+cinegrain 2 is free software under the [GNU General Public License v3.0](LICENSE) or later. You may use, change and share it freely, as long as anything you distribute that contains it is released under the GPL as well.
+
+If you want to use cinegrain 2 in commercial or closed-source software that cannot be released under the GPL, please ask me first by [opening an issue](https://github.com/mr-berndt/cinegrain2/issues) - a separate license is possible.
+
+Versions up to commit `fd9e8f3` (12 October 2026) were published under the MIT license.

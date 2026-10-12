@@ -1,4 +1,7 @@
 -- cinegrain2-control.lua - live control for the cinegrain2 film grain shader
+-- https://github.com/mr-berndt/cinegrain2
+-- Copyright (C) 2026 mr-berndt
+-- SPDX-License-Identifier: GPL-3.0-or-later
 --
 -- A five-zone graphic equalizer over luma (Black / Shadow / Mid / High /
 -- White) plus Level, Size and Soft, shown as a one-row overlay on the

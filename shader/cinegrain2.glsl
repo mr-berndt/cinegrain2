@@ -1,5 +1,7 @@
 // cinegrain2 - realistic film grain for mpv
 // https://github.com/mr-berndt/cinegrain2
+// Copyright (C) 2026 mr-berndt
+// SPDX-License-Identifier: GPL-3.0-or-later
 //
 // Grain model: white noise, shaped like real grain - a Gaussian blur for
 // the grain size minus a wide copy that takes out the coarse structure -
